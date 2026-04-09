@@ -1,18 +1,6 @@
 # mlx-bench
 
-<p align="center">
-  <img src="./assets/bonsai-logo.svg" width="280" alt="Bonsai">
-</p>
-
-<p align="center">
-  <a href="https://prismml.com"><b>Website</b></a> &nbsp;|&nbsp;
-  <a href="https://huggingface.co/collections/prism-ml/bonsai"><b>HuggingFace Collection</b></a> &nbsp;|&nbsp;
-  <a href="https://discord.gg/prismml"><b>Discord</b></a>
-</p>
-
-Benchmark MLX models on Apple Silicon. Measures **accuracy, time to first token (TTFT), tokens/second, and peak GPU memory** across multiple-choice datasets.
-
-Designed around [Bonsai](https://huggingface.co/collections/prism-ml/bonsai) — PrismML's 1-bit language models — but works with any MLX-compatible model on HuggingFace.
+Benchmark MLX models on Apple Silicon. Measures **accuracy, time to first token (TTFT), tokens/second, and peak GPU memory** across multiple-choice datasets and any MLX-compatible model on HuggingFace.
 
 ---
 
@@ -27,17 +15,17 @@ Designed around [Bonsai](https://huggingface.co/collections/prism-ml/bonsai) —
 ## Setup
 
 ```bash
-git clone https://github.com/PrismML-Eng/mlx-bench.git
+git clone https://github.com/roberto-ceraolo/mlx-bench.git
 cd mlx-bench
 
 # Install dependencies
 uv sync
 
-# (Optional) Download Bonsai models — only needed if you want to benchmark them
+# (Optional) Download local models — only needed if you want to benchmark them
 ./setup.sh
 ```
 
-`uv sync` is all you need to benchmark HuggingFace models (downloaded automatically on first run). `setup.sh` is only required for the local Bonsai models.
+`uv sync` is all you need to benchmark HuggingFace models (downloaded automatically on first run). `setup.sh` is only required for local models.
 
 ---
 
