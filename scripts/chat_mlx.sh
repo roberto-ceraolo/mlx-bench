@@ -29,4 +29,4 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-python "$SCRIPT_DIR/mlx_chat.py"
+"$DEMO_DIR/.venv/bin/python3" "$SCRIPT_DIR/mlx_chat.py"

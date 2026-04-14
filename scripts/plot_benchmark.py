@@ -35,15 +35,27 @@ def avg(lst: list) -> float:
     return sum(lst) / len(lst) if lst else math.nan
 
 
+# Fallback quant labels for records written before the quant field was added
+_QUANT_FALLBACK = {
+    "bonsai-1.7B": "1-bit", "bonsai-4B": "1-bit", "bonsai-8B": "1-bit",
+    "gemma-4-e2b": "4-bit", "ministral-3b": "4-bit", "qwen3-4b": "4-bit",
+}
+
+def display_label(model: str, quant: str) -> str:
+    q = quant or _QUANT_FALLBACK.get(model, "")
+    return f"{model}\n({q})" if q else model
+
+
 def summarise(records: list[dict]) -> dict:
     stats = defaultdict(lambda: {
-        "correct": 0, "total": 0,
+        "correct": 0, "total": 0, "quant": "",
         "ttft": [], "tps": [], "mem": [],
     })
     for r in records:
         m = r["model"]
         stats[m]["total"]   += 1
         stats[m]["correct"] += bool(r.get("is_correct"))
+        if r.get("quant"):             stats[m]["quant"] = r["quant"]
         if r.get("ttft")           is not None: stats[m]["ttft"].append(r["ttft"])
         if r.get("tps")            is not None: stats[m]["tps"].append(r["tps"])
         if r.get("peak_memory_gb") is not None: stats[m]["mem"].append(r["peak_memory_gb"])
@@ -75,6 +87,7 @@ def main():
         print("Results file is empty.", file=sys.stderr)
         sys.exit(1)
 
+    n_questions = len(set(r["question_id"] for r in records))
     stats  = summarise(records)
     models = sorted(stats.keys())
 
@@ -83,11 +96,12 @@ def main():
     for m in models:
         s = stats[m]
         data[m] = {
-            "acc":  s["correct"] / s["total"] * 100 if s["total"] else math.nan,
-            "ttft": avg(s["ttft"]),
-            "tps":  avg(s["tps"]),
-            "mem":  avg(s["mem"]),
-            "n":    s["total"],
+            "acc":   s["correct"] / s["total"] * 100 if s["total"] else math.nan,
+            "ttft":  avg(s["ttft"]),
+            "tps":   avg(s["tps"]),
+            "mem":   avg(s["mem"]),
+            "n":     s["total"],
+            "label": display_label(m, s["quant"]),
         }
 
     # ── Colour + marker per model ─────────────────────────────────────────
@@ -112,13 +126,13 @@ def main():
     legend_handles = [
         plt.scatter([], [],
                     color=style[m]["color"], marker=style[m]["marker"],
-                    s=80, label=m)
+                    s=80, label=data[m]["label"])
         for m in models
     ]
 
     for slug, xk, yk, xlabel, ylabel, title in PLOTS:
         fig, ax = plt.subplots(figsize=(7, 5))
-        fig.suptitle("MMLU-Pro Benchmark — model comparison",
+        fig.suptitle(f"MMLU-Pro Benchmark — model comparison ({n_questions} questions)",
                      fontsize=11, fontweight="bold")
 
         for m in models:
@@ -130,7 +144,7 @@ def main():
                        color=style[m]["color"], marker=style[m]["marker"],
                        s=140, zorder=4)
             txt = ax.annotate(
-                m, (x, y),
+                data[m]["label"], (x, y),
                 textcoords="offset points", xytext=(7, 5),
                 fontsize=8.5, color=style[m]["color"],
             )

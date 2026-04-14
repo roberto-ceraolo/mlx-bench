@@ -53,13 +53,13 @@ from mlx_lm.generate import make_sampler
 
 MODELS = {
     # ── Bonsai (local — requires ./setup.sh) ──────────────────────────────
-    "bonsai-1.7B":  {"path": "models/Bonsai-1.7B-mlx",                    "temp": 0.5},
-    "bonsai-4B":    {"path": "models/Bonsai-4B-mlx",                       "temp": 0.5},
-    "bonsai-8B":    {"path": "models/Bonsai-8B-mlx",                       "temp": 0.5},
+    "bonsai-1.7B":  {"path": "models/Bonsai-1.7B-mlx",                    "temp": 0.5, "quant": "1-bit"},
+    "bonsai-4B":    {"path": "models/Bonsai-4B-mlx",                       "temp": 0.5, "quant": "1-bit"},
+    "bonsai-8B":    {"path": "models/Bonsai-8B-mlx",                       "temp": 0.5, "quant": "1-bit"},
     # ── Community models (downloaded automatically from HuggingFace) ──────
-    "gemma-4-e2b":  {"path": "unsloth/gemma-4-E2B-it-UD-MLX-4bit",         "temp": 1.0},
-    "ministral-3b": {"path": "mlx-community/Ministral-3-3B-Instruct-2512-4bit", "temp": 0.1},
-    "qwen3-4b":     {"path": "Qwen/Qwen3-4B-MLX-4bit",                     "temp": 0.7},
+    "gemma-4-e2b":  {"path": "unsloth/gemma-4-E2B-it-UD-MLX-4bit",         "temp": 1.0, "quant": "4-bit"},
+    "ministral-3b": {"path": "mlx-community/Ministral-3-3B-Instruct-2512-4bit", "temp": 0.1, "quant": "4-bit"},
+    "qwen3-4b":     {"path": "Qwen/Qwen3-4B-MLX-4bit",                     "temp": 0.7, "quant": "4-bit"},
 }
 
 OPTION_LETTERS = "ABCDEFGHIJ"
@@ -528,6 +528,7 @@ def main():
 
                     record = {
                         "model":             model_key,
+                        "quant":             cfg.get("quant", ""),
                         "question_id":       qid,
                         "temp":              temp,
                         "seed":              args.seed,

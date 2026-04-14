@@ -37,4 +37,4 @@ if ! python -c "import datasets" 2>/dev/null; then
     info "Dependencies up to date."
 fi
 
-python "$SCRIPT_DIR/benchmark.py" --demo-dir "$DEMO_DIR" "$@"
+"$DEMO_DIR/.venv/bin/python" "$SCRIPT_DIR/benchmark.py" --demo-dir "$DEMO_DIR" "$@"
