@@ -105,7 +105,8 @@ Plots are generated automatically at the end of each run. To print a summary tab
 
 ```bash
 python scripts/benchmark_summary.py
-python scripts/benchmark_summary.py --by-category   # per-category breakdown
+python scripts/benchmark_summary.py --by-category          # per-category breakdown
+python scripts/benchmark_summary.py --markdown report.md   # export markdown report
 ```
 
 To regenerate plots manually:
@@ -118,15 +119,17 @@ python scripts/plot_benchmark.py
 
 ## Example Results
 
-Benchmark run on a **MacBook Pro M5, 24 GB RAM** — 50 questions from [MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro) (stratified). Results on other datasets (MMLU, ARC) have not been collected yet.
+Benchmark run on a **MacBook Pro M5, 24 GB RAM** — 100 questions from [MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro) (stratified, seed=42).
 
-> **Note:** 50 questions is a small sample — accuracy figures should be treated as indicative, not definitive. Run with `--n 200` or more for stable estimates.
+> **Note:** 100 questions is a moderate sample — accuracy figures are indicative. Run with `--n 500` or more for stable estimates.
 
-| Model | Accuracy | TTFT (s) | Tokens/s | Peak Memory (GB) |
-|-------|----------|----------|----------|-----------------|
-| qwen3-4b | **66.0%** | 0.27 | 53.0 | 3.94 |
-| gemma-4-e2b | 50.0% | 0.17 | 66.4 | 3.83 |
-| ministral-3b | 46.0% | 0.23 | 56.4 | 3.94 |
-| bonsai-8B | 28.0% | 0.40 | **81.0** | **1.95** |
+| Model | Accuracy | TTFT (s) | Tokens/s | Peak Memory (GB) | Avg Gen Tokens |
+|-------|----------|----------|----------|-----------------|----------------|
+| qwen3-4b (4-bit) | **62.0%** | 0.26 | 52.9 | 3.91 | 443 |
+| gemma-4-e2b (4-bit) | 49.0% | 0.17 | **64.3** | **3.84** | 783 |
+| ministral-3b (4-bit) | 47.0% | **0.17** | 59.0 | 3.91 | 615 |
+| bonsai-8B (1-bit) | 34.0% | 0.39 | 81.9 | **1.99** | 621 |
+
+bonsai-8B uses 1-bit quantization — it runs at **81.9 tok/s** and fits in under **2 GB of GPU memory**, making it the most memory-efficient option by a wide margin.
 
 ![Accuracy vs Peak Memory](./assets/accuracy_vs_memory.png)
